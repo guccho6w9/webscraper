@@ -1,0 +1,20 @@
+<h1>{{ product.name }}</h1>
+<p>Precio actual: ${{ product.price }}</p>
+
+<h2>Historial de precios</h2>
+<ul>
+    {% for history in price_history %}
+        <li>{{ history.date }}: ${{ history.price }}</li>
+    {% empty %}
+        <li>No hay historial de precios</li>
+    {% endfor %}
+</ul>
+
+<form method="POST" action="{% url 'save_product' product.id %}">
+    {% csrf_token %}
+    {% if product in request.user.saved_products.all %}
+        <button type="submit">Eliminar de guardados</button>
+    {% else %}
+        <button type="submit">Guardar producto</button>
+    {% endif %}
+</form>
