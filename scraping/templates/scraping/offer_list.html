@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ofertas</title>
+</head>
+<body>
+    <h1>Ofertas actuales</h1>
+    <ul>
+        {% for offer in offers %}
+            <li>
+                <strong>{{ offer.title }}</strong> - {{ offer.price }} tiene un descuento de {{ offer.discount }} - <a href="{{ offer.link }}">Ver oferta</a>
+            </li>
+        {% empty %}
+            <li>No hay ofertas disponibles en este momento.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

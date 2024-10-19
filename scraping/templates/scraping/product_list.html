@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Lista de Productos</title>
+</head>
+<body>
+    <h1>Ofertas de Tecnología</h1>
+    <ul>
+        {% for producto in productos %}
+            <li>{{ producto.name }} - {{ producto.price }} from {{ producto.store }}  <a href="{{ producto.url }}">Ver más</a></li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
