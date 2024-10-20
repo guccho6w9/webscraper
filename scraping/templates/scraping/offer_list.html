@@ -1,4 +1,3 @@
-<!-- offer_list.html -->
 {% extends 'base.html' %}
 
 {% block title %}Ofertas{% endblock %}
@@ -11,7 +10,8 @@
 <ul>
     {% for offer in offers %}
         <li>
-            <strong>{{ offer.title }}</strong> - {{ offer.price }} tiene un descuento de {{ offer.discount }} - <a href="{{ offer.link }}">Ver oferta</a>
+            <img src="{{ offer.image }}" alt="{{ offer.title }}" style="width: 100px; height: auto;"> <!-- Mostrar la imagen -->
+            <strong>{{ offer.title }}</strong> - {{ offer.price }} tiene un descuento de {{ offer.discount }} original: {{ offer.og_price }}  - <a href="{{ offer.link }}">Ver oferta</a>
         </li>
     {% empty %}
         <li>No hay ofertas disponibles en este momento.</li>
