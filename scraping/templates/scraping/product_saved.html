@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}Productos Guardados{% endblock %}
+
+{% block content %}
+<h1>Mis Productos Guardados</h1>
+
+{% if saved_products %}
+    <ul>
+        {% for product in saved_products %}
+            <li>
+                <strong>{{ product.name }}</strong> - {{ product.price }} - 
+                <a href="{{ product.url }}" target="_blank">Ver en la tienda</a>
+
+                <!-- Botón para ver detalles del producto -->
+                <a href="{% url 'product_detail' product.id %}">
+                    <button type="button">Ver detalles</button>
+                </a>
+
+                <!-- Formulario para eliminar producto de guardados -->
+                <form action="{% url 'save_product' product.id %}" method="post" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit">Eliminar de guardados</button>
+                </form>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No tienes productos guardados.</p>
+{% endif %}
+{% endblock %}

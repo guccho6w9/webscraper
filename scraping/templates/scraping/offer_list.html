@@ -10,8 +10,26 @@
 <ul>
     {% for offer in offers %}
         <li>
-            <img src="{{ offer.image }}" alt="{{ offer.title }}" style="width: 100px; height: auto;"> <!-- Mostrar la imagen -->
-            <strong>{{ offer.title }}</strong> - {{ offer.price }} tiene un descuento de {{ offer.discount }} original: {{ offer.og_price }}  - <a href="{{ offer.link }}">Ver oferta</a>
+            <img src="{{ offer.image }}" alt="{{ offer.title }}" style="width: 100px; height: auto;">
+            <strong>{{ offer.title }}</strong> - ${{ offer.price }} tiene un descuento de {{ offer.discount }} original: {{ offer.og_price }}  - 
+            <a href="{{ offer.link }}">Ver oferta</a>
+
+            <!-- Formulario para guardar producto -->
+            <form method="POST" action="{% url 'offer_list' %}">
+                {% csrf_token %}
+                <input type="hidden" name="offer_title" value="{{ offer.title }}">
+                <input type="hidden" name="offer_price" value="{{ offer.price }}">
+                <input type="hidden" name="offer_url" value="{{ offer.link }}">
+                <input type="hidden" name="offer_store" value="{{ offer.store }}">
+                <input type="hidden" name="offer_category" value="{{ offer.category }}">
+                <button type="submit">
+                    {% if offer in request.user.saved_products.all %}
+                        Eliminar de guardados
+                    {% else %}
+                        Guardar producto
+                    {% endif %}
+                </button>
+            </form>
         </li>
     {% empty %}
         <li>No hay ofertas disponibles en este momento.</li>
