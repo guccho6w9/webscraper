@@ -12,9 +12,44 @@ def product_list(request):
     productos = Product.objects.all() 
     return render(request, 'scraping/product_list.html', {'productos': productos})
 
+@login_required
 def offer_list(request):
-    offers = get_offers()
+    offers = get_offers() 
+    
+    if request.method == 'POST':
+        
+        offer_title = request.POST.get('offer_title')
+        offer_price = request.POST.get('offer_price')
+        offer_url = request.POST.get('offer_url')
+        offer_store = request.POST.get('offer_store')
+        offer_category = request.POST.get('offer_category')
+        
+     
+        product, created = Product.objects.get_or_create(
+            name=offer_title,
+            price=offer_price,
+            url=offer_url,
+            store=offer_store,
+            category=offer_category
+        )
+        
+
+        user = request.user
+        if product in user.saved_products.all():
+            user.saved_products.remove(product)
+        else:
+            user.saved_products.add(product)
+  
+        return redirect('offer_list')
+
     return render(request, 'scraping/offer_list.html', {'offers': offers})
+
+
+#productos guardados
+def saved_products(request):
+    user = request.user
+    saved_products = user.saved_products.all() 
+    return render(request, 'scraping/product_saved.html', {'saved_products': saved_products})
 
 #vista para usuarios
 #registro
@@ -56,12 +91,14 @@ def save_product(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     user = request.user
 
+    # Si el producto está guardado, lo eliminamos; si no está, lo añadimos
     if product in user.saved_products.all():
         user.saved_products.remove(product)
     else:
         user.saved_products.add(product)
 
-    return redirect('product_detail', product_id=product.id)
+    # Redirigir siempre a la página de productos guardados tras la acción
+    return redirect('saved_products')
 
 @login_required
 def product_detail(request, product_id):
