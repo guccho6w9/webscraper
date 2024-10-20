@@ -12,4 +12,7 @@ urlpatterns = [
     path('cuenta/', include('django.contrib.auth.urls')),
     path('login/', views.custom_login, name='custom_login'),
     path('logout/', CustomLogoutView.as_view(), name='logout'),
+    path('product/<int:product_id>/', views.product_detail, name='product_detail'),
+    path('productos-guardados/', views.saved_products, name='product_saved'),
+    path('save-product/<int:product_id>/', views.save_product, name='save_product'),
 ]
