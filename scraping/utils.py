@@ -12,31 +12,37 @@ def get_offers():
     if response.status_code == 200:
         soup = BeautifulSoup(response.content, 'html.parser')
         
-        # Asegúrate de encontrar el contenedor correcto para los productos
+        # Encuentra todos los elementos de productos
         products_container = soup.find_all('div', class_='poly-card__content')
 
         offers = []
         for product in products_container:
+            image_url = product.find_previous('img', class_='poly-component__picture lazy-loadable')  # Obtener la imagen correspondiente
             title_element = product.find('a', class_='poly-component__title')
             price_element = product.find('span', class_='andes-money-amount andes-money-amount--cents-superscript')
-            discount_element = product.find('span', class_="andes-money-amount__discount")
-            link_element = product.find('a')
+            og_price_element = product.find('s', class_='andes-money-amount andes-money-amount--previous andes-money-amount--cents-comma')
+            discount_element = product.find('span', class_='andes-money-amount__discount')
+            link_element = title_element  # La misma etiqueta de título es el enlace
 
-            if not title_element or not price_element or not link_element:
-                continue  # Saltar este producto si no se encuentra alguno de los elementos
+            if not image_url or not title_element or not price_element or not og_price_element or not link_element:
+                continue  
 
+            image = image_url['data-src'] 
             title = title_element.get_text()
             price = price_element.get_text()
+            og_price = og_price_element.get_text()
             discount = discount_element.get_text() if discount_element else 'Sin descuento'
             link = link_element['href']
 
             offers.append({
+                'image': image,
                 'title': title,
                 'price': price,
+                'og_price': og_price,
                 'discount': discount,
                 'link': link
             })
-        
+
         return offers
     else:
         return []
