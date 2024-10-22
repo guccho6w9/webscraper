@@ -12,7 +12,8 @@ class Product(models.Model):
     store = models.CharField(max_length=100)
     category = models.CharField(max_length=100)
     date_scrapping = models.DateTimeField(auto_now_add=True)
-
+    img_url = models.URLField(max_length=400)
+    discount = models.CharField(max_length=10)
 
     saved_by = models.ManyToManyField(User, blank=True, related_name='saved_products')
 
