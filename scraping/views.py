@@ -8,6 +8,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.views import LogoutView
 from django.contrib import messages
 
+
 def product_list(request):
     productos = Product.objects.all() 
     return render(request, 'scraping/product_list.html', {'productos': productos})
@@ -19,14 +20,18 @@ def offer_list(request):
     if request.method == 'POST':
         
         offer_title = request.POST.get('offer_title')
+        offer_img_url = request.POST.get("img_url")
         offer_price = request.POST.get('offer_price')
         offer_url = request.POST.get('offer_url')
         offer_store = request.POST.get('offer_store')
         offer_category = request.POST.get('offer_category')
+        offer_discount = request.POST.get("discount")
         
      
         product, created = Product.objects.get_or_create(
+            img_url =offer_img_url,
             name=offer_title,
+            discount=offer_discount,
             price=offer_price,
             url=offer_url,
             store=offer_store,
@@ -110,3 +115,25 @@ def product_detail(request, product_id):
         'price_history': price_history,
     }
     return render(request, 'product_detail.html', context)
+
+#logica para mostrar ultimos productos guardados del usuario
+
+def group_products(products, n):
+  
+    for i in range(0, len(products), n):
+        yield products[i:i + n]
+
+def homepage(request):
+    # Asegurarse de que el usuario esté autenticado
+    if request.user.is_authenticated:
+        # Obtener los últimos 6 productos guardados por el usuario
+        saved_products = Product.objects.filter(saved_by=request.user).order_by('-date_scrapping')[:8]
+    else:
+        saved_products = []  # Si no está autenticado, devolver una lista vacía
+
+    # Agrupar productos en grupos de 4 para el slider
+    grouped_products = list(group_products(saved_products, 4))
+
+    return render(request, 'scraping/homepage.html', {
+        'grouped_products': grouped_products,
+    })
