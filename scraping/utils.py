@@ -17,23 +17,33 @@ def get_offers():
 
         offers = []
         for product in products_container:
-            image_url = product.find_previous('img', class_='poly-component__picture lazy-loadable')  # Obtener la imagen correspondiente
+            image_url = product.find_previous('img', class_='poly-component__picture lazy-loadable') 
+
             title_element = product.find('a', class_='poly-component__title')
-            price_element = product.find('span', class_='andes-money-amount__fraction')
-            og_price_element = product.find('s', class_='andes-money-amount andes-money-amount--previous andes-money-amount--cents-comma')
+         
+            # Precio actual
+            price_element = product.find('div', class_='poly-price__current')
+            price_fraction = price_element.find('span', class_='andes-money-amount__fraction') if price_element else None
+
+            # Precio original (dentro de la etiqueta <s>)
+            og_price_element = product.find('s', class_='andes-money-amount')
+            og_price_fraction = og_price_element.find('span', class_='andes-money-amount__fraction') if og_price_element else None
+
             discount_element = product.find('span', class_='andes-money-amount__discount')
             link_element = title_element  # La misma etiqueta de título es el enlace
 
             if not image_url or not title_element or not price_element or not og_price_element or not link_element:
                 continue  
-
+            title = title_element.get_text() if title_element else "no disponible"
             image = image_url['data-src'] 
-            title = title_element.get_text()
-            price = price_element.get_text()
+            price = price_fraction.get_text() if price_fraction else 'No disponible'
+            og_price = og_price_fraction.get_text() if og_price_fraction else 'No disponible'
+   
             og_price = og_price_element.get_text()
             discount = discount_element.get_text() if discount_element else 'Sin descuento'
             link = link_element['href']
 
+            print(title)
             offers.append({
                 'image': image,
                 'title': title,
