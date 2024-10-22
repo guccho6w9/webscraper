@@ -1,0 +1,60 @@
+/* Estilos básicos del sidebar */
+.sidebar {
+    width: 250px;
+    height: 90vh; /* Altura completa de la ventana */
+    position: fixed;
+    top: 60px; /* Mantén esto para que esté debajo del navbar-top */
+    left: 0;
+    background-color: #f8f9fa;
+    padding-top: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Ajustar el contenido principal para que no se superponga con el sidebar */
+.main-content {
+    margin-left: 250px; /* Asegura que el contenido principal esté desplazado */
+    padding: 20px;
+    padding-top: 20px; /* Espacio adicional para evitar que el contenido principal esté debajo del navbar-top */
+}
+
+/* Asegúrate de que el navbar-brand esté alineado correctamente */
+.sidebar-header {
+    padding: 15px;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+/* Opciones del menú en la barra lateral */
+.navbar-nav {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+/* Espaciado entre los elementos de la barra lateral */
+.nav-item {
+    padding: 10px;
+}
+
+/* Mover el botón "Cerrar sesión" al final */
+.nav-item.mt-auto {
+    margin-top: auto;
+}
+
+/* Estilos para el navbar-top */
+.navbar-top {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000; /* Asegura que esté por encima de otros elementos */
+    border-bottom: 1px solid #ccc;
+
+}
+
+@media (max-width: 768px) {
+    .carousel-item .col-md-3 {
+        flex: 0 0 50%;  /* Muestra 2 productos por fila en pantallas pequeñas */
+    }
+}
