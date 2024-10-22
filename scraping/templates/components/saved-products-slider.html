@@ -1,0 +1,32 @@
+<div id="savedProductsSlider" class="carousel slide" data-ride="carousel">
+    <div class="carousel-inner">
+        {% for group in grouped_products %}
+            <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                <div class="row">
+                    {% for product in group %}
+                        <div class="col-md-3">
+                            <div class="card mb-3">
+                                <img class="card-img-top" src="{{ product.img_url }}" alt="{{ product.name }}">
+                                <div class="card-body text-center">
+                                    <h5 class="card-title">{{ product.name }}</h5>
+                                    <p class="card-text">{{ product.price }} - Descuento: {{ product.discount }}%</p>
+                                    <a href="{% url 'product_detail' product.id %}" class="btn btn-primary">Ver producto</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- Controles de navegación -->
+    <a class="carousel-control-prev" href="#savedProductsSlider" role="button" data-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="sr-only">Anterior</span>
+    </a>
+    <a class="carousel-control-next" href="#savedProductsSlider" role="button" data-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="sr-only">Siguiente</span>
+    </a>
+</div>

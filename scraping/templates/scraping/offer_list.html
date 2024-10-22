@@ -19,6 +19,8 @@
                 {% csrf_token %}
                 <input type="hidden" name="offer_title" value="{{ offer.title }}">
                 <input type="hidden" name="offer_price" value="{{ offer.price }}">
+                <input type="hidden" name="discount" value="{{ offer.discount }}">
+                <input type="hidden" name="img_url" value="{{ offer.image }}">
                 <input type="hidden" name="offer_url" value="{{ offer.link }}">
                 <input type="hidden" name="offer_store" value="{{ offer.store }}">
                 <input type="hidden" name="offer_category" value="{{ offer.category }}">

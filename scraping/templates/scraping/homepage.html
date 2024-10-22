@@ -1,0 +1,12 @@
+<!-- templates/homepage.html -->
+{% extends 'base.html' %}
+{% include 'components/saved-products-slider.html' %}
+
+
+{% block content %}
+<div class="container mt-4">
+    <!-- Slider para mostrar los últimos productos guardados -->
+    <h2>Últimos productos guardados</h2>
+    {% include 'components/saved-products-slider.html' %}
+</div>
+{% endblock %}
