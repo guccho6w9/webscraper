@@ -33,12 +33,13 @@ def offer_list(request):
         offer_category = request.POST.get('offer_category')
         offer_discount = request.POST.get("discount")
         
+        offer_price_cleaned = offer_price.replace('.', '').replace(',', '.')
      
         product, created = Product.objects.get_or_create(
             img_url =offer_img_url,
             name=offer_title,
             discount=offer_discount,
-            price=offer_price,
+            price=offer_price_cleaned,
             url=offer_url,
             store=offer_store,
             category=offer_category
