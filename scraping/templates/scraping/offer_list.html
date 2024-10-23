@@ -8,13 +8,12 @@
 
 {% block content %}
 <ul>
-    {% for offer in offers %}
+    {% for offer in page_offers %}
         <li>
             <img src="{{ offer.image }}" alt="{{ offer.title }}" style="width: 100px; height: auto;">
             <strong>{{ offer.title }}</strong> - ${{ offer.price }} tiene un descuento de {{ offer.discount }} original: {{ offer.og_price }}  - 
             <a href="{{ offer.link }}">Ver oferta</a>
 
-            <!-- Formulario para guardar producto -->
             <form method="POST" action="{% url 'offer_list' %}">
                 {% csrf_token %}
                 <input type="hidden" name="offer_title" value="{{ offer.title }}">
@@ -37,4 +36,23 @@
         <li>No hay ofertas disponibles en este momento.</li>
     {% endfor %}
 </ul>
+
+<!-- Controles de paginación -->
+<div class="pagination">
+    <span class="step-links">
+        {% if page_offers.has_previous %}
+            <a href="?page=1">&laquo; primera</a>
+            <a href="?page={{ page_offers.previous_page_number }}">anterior</a>
+        {% endif %}
+
+        <span class="current">
+            Página {{ page_offers.number }} de {{ page_offers.paginator.num_pages }}
+        </span>
+
+        {% if page_offers.has_next %}
+            <a href="?page={{ page_offers.next_page_number }}">siguiente</a>
+            <a href="?page={{ page_offers.paginator.num_pages }}">última &raquo;</a>
+        {% endif %}
+    </span>
+</div>
 {% endblock %}

@@ -6,7 +6,7 @@
     <title>{% block title %}Mi Aplicación{% endblock %}</title>
     
     {% load static %}
-    
+
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="{% static 'public/CSS/style.css' %}">
@@ -14,12 +14,14 @@
 </head>
 <body>
 
-    <!-- Navbar superior -->
-    
-
-    <!-- Navbar lateral (sidebar) -->
-    {% include 'components/navbar.html' %}
-    {% include 'components/navbar-top.html' %}
+    <!-- Verifica si el usuario está autenticado -->
+    {% if user.is_authenticated %}
+        <!-- Navbar superior -->
+        {% include 'components/navbar-top.html' %}
+        
+        <!-- Navbar lateral (sidebar) -->
+        {% include 'components/navbar.html' %}
+    {% endif %}
 
     <div class="main-content">
         <header>
