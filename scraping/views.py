@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import Product, PriceHistory
 from django.contrib.auth.decorators import login_required
 from .utils import get_offers
+from django.core.paginator import Paginator
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.forms import UserCreationForm
@@ -16,6 +17,11 @@ def product_list(request):
 @login_required
 def offer_list(request):
     offers = get_offers() 
+    # Paginación: dividimos las ofertas en páginas de 20 elementos
+    paginator = Paginator(offers, 20)  # 20 ofertas por página
+    page_number = request.GET.get('page')  # Obtener el número de página de la URL
+    page_offers = paginator.get_page(page_number)  # Obtenemos las ofertas de la página actual
+
     
     if request.method == 'POST':
         
@@ -47,7 +53,7 @@ def offer_list(request):
   
         return redirect('offer_list')
 
-    return render(request, 'scraping/offer_list.html', {'offers': offers})
+    return render(request, 'scraping/offer_list.html', {'page_offers': page_offers})
 
 
 #productos guardados
@@ -74,14 +80,14 @@ def register(request):
 #login
 def custom_login(request):
     if request.user.is_authenticated:
-        return redirect('offer_list')  # Cambia 'home' por la URL de tu página de inicio
+        return redirect('homepage')  # Cambia 'home' por la URL de tu página de inicio
 
     form = AuthenticationForm(data=request.POST or None)
     if form.is_valid():
         user = form.get_user()
         login(request, user)
         messages.success(request, "Inicio de sesión exitoso.")
-        return redirect('offer_list')  # Cambia 'home' por la URL a la que quieras redirigir
+        return redirect('homepage')  # Cambia 'home' por la URL a la que quieras redirigir
     else:
         messages.error(request, "Por favor, corrige los errores a continuación.")
 
