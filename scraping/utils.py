@@ -4,22 +4,29 @@ from bs4 import BeautifulSoup
 
 def get_offers():
     cached_offers = cache.get('offers')
-    
+
     if cached_offers:
         return cached_offers
-    
-    url = 'https://www.mercadolibre.com.ar/ofertas?container_id=MLA779357-3&category=MLA1648#deal_print_id=38647970-8e63-11ef-9a39-593bd032a5af&c_id=carouseldynamic-home&c_element_order=undefined&c_campaign=VER-MAS&c_uid=38647970-8e63-11ef-9a39-593bd032a5af'
+
+    base_url = 'https://www.mercadolibre.com.ar/ofertas?container_id=MLA779357-3&category=MLA1648&page='
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36'
     }
 
-    response = requests.get(url, headers=headers)
+    offers = []
+    page = 1
 
-    if response.status_code == 200:
-        soup = BeautifulSoup(response.content, 'html.parser')
+    while True:
+        url = base_url + str(page)
+        response = requests.get(url, headers=headers)
+        
+        if response.status_code != 200:
+            break
+
+        html_content = response.text
+        soup = BeautifulSoup(html_content, 'html.parser')
         products_container = soup.find_all('div', class_='poly-card__content')
 
-        offers = []
         for product in products_container:
             image_url = product.find_previous('img', class_='poly-component__picture lazy-loadable') 
             title_element = product.find('a', class_='poly-component__title')
@@ -32,6 +39,7 @@ def get_offers():
 
             if not image_url or not title_element or not price_element or not og_price_element or not link_element:
                 continue  
+            
             title = title_element.get_text() if title_element else "no disponible"
             image = image_url['data-src'] 
             price = price_fraction.get_text() if price_fraction else 'No disponible'
@@ -48,7 +56,13 @@ def get_offers():
                 'link': link
             })
 
-        cache.set('offers', offers, timeout=60*15)  # Cachear por 15 minutos
-        return offers
-    else:
-        return []
+        # Verificar si hay un botón "Siguiente"
+        next_button = soup.find('li', class_='andes-pagination__button--next')
+        if next_button and 'andes-pagination__button--disabled' not in next_button.get('class', []):
+            page += 1
+        else:
+            break
+        print(url)
+
+    cache.set('offers', offers, timeout=60 * 15)
+    return offers
