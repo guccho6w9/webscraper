@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import Product, PriceHistory
 from django.contrib.auth.decorators import login_required
 from .utils import get_offers
+
 from django.core.paginator import Paginator
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import AuthenticationForm
@@ -13,6 +14,9 @@ from django.contrib import messages
 def product_list(request):
     productos = Product.objects.all() 
     return render(request, 'scraping/product_list.html', {'productos': productos})
+
+
+
 
 @login_required
 def offer_list(request):
@@ -55,6 +59,7 @@ def offer_list(request):
         return redirect('offer_list')
 
     return render(request, 'scraping/offer_list.html', {'page_offers': page_offers})
+
 
 
 #productos guardados
