@@ -20,15 +20,13 @@ def product_list(request):
 
 @login_required
 def offer_list(request):
-    offers = get_offers() 
-    # Paginación: dividimos las ofertas en páginas de 20 elementos
-    paginator = Paginator(offers, 20)  # 20 ofertas por página
-    page_number = request.GET.get('page')  # Obtener el número de página de la URL
-    page_offers = paginator.get_page(page_number)  # Obtenemos las ofertas de la página actual
+    offers = get_offers()
 
-    
+    paginator = Paginator(offers, 20)
+    page_number = request.GET.get('page')
+    page_offers = paginator.get_page(page_number)
+
     if request.method == 'POST':
-        
         offer_title = request.POST.get('offer_title')
         offer_img_url = request.POST.get("img_url")
         offer_price = request.POST.get('offer_price')
@@ -36,26 +34,36 @@ def offer_list(request):
         offer_store = request.POST.get('offer_store')
         offer_category = request.POST.get('offer_category')
         offer_discount = request.POST.get("discount")
-        
+
         offer_price_cleaned = offer_price.replace('.', '').replace(',', '.')
-     
+
+        # Crear o buscar el producto
         product, created = Product.objects.get_or_create(
-            img_url =offer_img_url,
+            img_url=offer_img_url,
             name=offer_title,
             discount=offer_discount,
-            price=offer_price_cleaned,
             url=offer_url,
             store=offer_store,
-            category=offer_category
+            category=offer_category,
+            defaults={'price': offer_price_cleaned}
         )
-        
+
+        # Si se creó un nuevo producto, añadir el precio al historial
+        if created:
+            PriceHistory.objects.create(product=product, price=offer_price_cleaned)
+        else:
+            # Si el producto ya existe, verifica si el precio ha cambiado
+            if product.price != offer_price_cleaned:
+                product.price = offer_price_cleaned
+                product.save()
+                PriceHistory.objects.create(product=product, price=offer_price_cleaned)
 
         user = request.user
         if product in user.saved_products.all():
             user.saved_products.remove(product)
         else:
             user.saved_products.add(product)
-  
+
         return redirect('offer_list')
 
     return render(request, 'scraping/offer_list.html', {'page_offers': page_offers})
@@ -115,7 +123,7 @@ def save_product(request, product_id):
         user.saved_products.add(product)
 
     # Redirigir siempre a la página de productos guardados tras la acción
-    return redirect('saved_products')
+    return redirect('product_saved')
 
 @login_required
 def product_detail(request, product_id):

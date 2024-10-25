@@ -1,20 +1,46 @@
-<h1>{{ product.name }}</h1>
-<p>Precio actual: ${{ product.price }}</p>
+{% extends 'base.html' %}
+{% load custom-filters %}
+{% block content %}
 
-<h2>Historial de precios</h2>
-<ul>
-    {% for history in price_history %}
-        <li>{{ history.date }}: ${{ history.price }}</li>
-    {% empty %}
-        <li>No hay historial de precios</li>
-    {% endfor %}
-</ul>
+<div class="container mt-5">
+    <div class="row">
+        <!-- Imagen del producto -->
+        <div class="col-md-4">
+            <img src="{{ product.img_url }}" alt="{{ product.name }}" class="img-fluid">
+        </div>
 
-<form method="POST" action="{% url 'save_product' product.id %}">
-    {% csrf_token %}
-    {% if product in request.user.saved_products.all %}
-        <button type="submit">Eliminar de guardados</button>
-    {% else %}
-        <button type="submit">Guardar producto</button>
-    {% endif %}
-</form>
+        <!-- Detalles del producto -->
+        <div class="col-md-8">
+            <h1>{{ product.name }}</h1>
+            <p><strong>Tienda:</strong> {{ product.store }}</p>
+            <p><strong>Descuento:</strong> {{ product.discount }}</p>
+            <!-- Aplica el filtro 'format_price' al precio actual -->
+            <p><strong>Precio actual:</strong> ${{ product.price|format_price }}</p>
+
+            <!-- Botón para guardar o eliminar el producto -->
+            <form method="POST" action="{% url 'save_product' product.id %}">
+                {% csrf_token %}
+                {% if product in request.user.saved_products.all %}
+                    <button type="submit" class="btn btn-danger">Eliminar de guardados</button>
+                {% else %}
+                    <button type="submit" class="btn btn-primary">Guardar producto</button>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+
+    <!-- Historial de precios -->
+    <div class="mt-5">
+        <h2>Historial de precios</h2>
+        <ul class="list-group">
+            {% for history in price_history %}
+                <!-- Aplica el filtro 'format_price' al historial de precios -->
+                <li class="list-group-item">{{ history.date }}: ${{ history.price|format_price }}</li>
+            {% empty %}
+                <li class="list-group-item">No hay historial de precios</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+{% endblock %}

@@ -56,7 +56,6 @@ def get_offers():
                 'link': link
             })
 
-        # Verificar si hay un botón "Siguiente"
         next_button = soup.find('li', class_='andes-pagination__button--next')
         if next_button and 'andes-pagination__button--disabled' not in next_button.get('class', []):
             page += 1

@@ -11,7 +11,7 @@
     {% for offer in page_offers %}
         <li>
             <img src="{{ offer.image }}" alt="{{ offer.title }}" style="width: 100px; height: auto;">
-            <strong>{{ offer.title }}</strong> - ${{ offer.price }} tiene un descuento de {{ offer.discount }} original: {{ offer.og_price }}  - 
+            <strong>{{ offer.title }}</strong> - ${{ offer.price }} tiene un descuento de {{ offer.discount }} original: ${{ offer.og_price }}  - 
             <a href="{{ offer.link }}">Ver oferta</a>
 
             <form method="POST" action="{% url 'offer_list' %}">
