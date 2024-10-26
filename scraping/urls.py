@@ -3,7 +3,7 @@ from . import views
 from django.contrib.auth import views as auth_views
 
 class CustomLogoutView(auth_views.LogoutView):
-    next_page = 'login'  
+    next_page = 'custom_login' 
 
 urlpatterns = [
     path('productos/', views.product_list, name='product_list'),
